@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/mongodb";
 import { sendLoginCode } from "@/lib/mail";
+import { verifyRecaptcha } from "@/lib/recaptcha";
 import Otp from "@/models/Otp";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,12 +20,23 @@ export default async function handler(
   }
 
   const email = String(req.body?.email || "").trim().toLowerCase();
+  const captchaToken = String(req.body?.captchaToken || "");
 
   if (!EMAIL_REGEX.test(email)) {
     return res.status(400).json({ success: false, message: "Email invalide" });
   }
 
+  if (!captchaToken) {
+    return res.status(400).json({ success: false, message: "Captcha requis" });
+  }
+
   try {
+    const captchaIsValid = await verifyRecaptcha(captchaToken);
+
+    if (!captchaIsValid) {
+      return res.status(400).json({ success: false, message: "Captcha invalide" });
+    }
+
     await dbConnect();
 
     const code = generateCode();

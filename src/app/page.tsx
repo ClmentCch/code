@@ -1,6 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { signInWithPopup } from "firebase/auth";
+import { FcGoogle } from "react-icons/fc";
+import { getFirebaseAuth, googleProvider } from "@/lib/firebase";
+import ReCAPTCHA from "react-google-recaptcha";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -8,6 +12,7 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [showCode, setShowCode] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<Status>("idle");
 
@@ -19,7 +24,7 @@ export default function Home() {
     const response = await fetch("/api/send-code", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, captchaToken }),
     });
 
     const data = await response.json();
@@ -58,39 +63,44 @@ export default function Home() {
     window.location.href = data.redirect || "/success";
   }
 
+  async function signInWithGoogle() {
+    setStatus("loading");
+    setMessage("Connexion avec Google...");
+
+    try {
+      const auth = getFirebaseAuth();
+      await signInWithPopup(auth, googleProvider);
+      window.location.href = "/success";
+    } catch (error) {
+      console.error("google sign-in error", error);
+      setStatus("error");
+      setMessage("Connexion Google impossible");
+    }
+  }
+
   const isLoading = status === "loading";
 
   return (
     <div className="min-h-screen bg-[#111111] px-4 py-8 text-[#e7e7e7]">
       <main className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-5xl items-center gap-8 md:grid-cols-[1.05fr_0.95fr]">
         <section className="space-y-7">
-          <div className="inline-flex rounded-full border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-2 text-sm font-semibold text-[#ff6a2b]">
+          <div className="inline-flex rounded-full border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-2 text-sm font-semibold text-[#48d65b]">
             Authentification par mail
           </div>
           <div className="space-y-5">
             <h1 className="max-w-2xl text-4xl font-bold leading-tight text-white md:text-6xl">
-              Un site de connexion propre, pret pour Vercel.
+              Un YouTube pour les fans de Minecraft.
             </h1>
             <p className="max-w-xl text-base leading-7 text-[#a7a7a7] md:text-lg">
               Entrez votre email, recevez un code a 6 chiffres, puis validez la
               connexion en quelques secondes.
             </p>
           </div>
-          <div className="grid max-w-2xl gap-3 sm:grid-cols-3">
-            {["Next.js", "MongoDB", "Resend"].map((item) => (
-              <div
-                className="rounded-lg border border-[#2a2a2a] bg-[#171717] px-4 py-3 text-sm font-bold text-white"
-                key={item}
-              >
-                {item}
-              </div>
-            ))}
-          </div>
         </section>
 
         <section className="overflow-hidden rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] shadow-2xl shadow-black/30">
-          <div className="bg-[#ff4400] px-7 py-5 text-center">
-            <p className="text-lg font-bold text-white">mail-login</p>
+          <div className="bg-[#16a832] px-7 py-5 text-center">
+            <p className="text-lg font-bold text-white">MinevidTube Auth</p>
           </div>
           <form className="space-y-5 p-7" onSubmit={sendCode}>
             <div className="space-y-2 text-center">
@@ -107,7 +117,7 @@ export default function Home() {
                 Email
               </span>
               <input
-                className="w-full rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 text-white outline-none transition focus:border-[#ff4400] focus:ring-2 focus:ring-[#ff4400]/25"
+                className="w-full rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 text-white outline-none transition focus:border-[#16a832] focus:ring-2 focus:ring-[#16a832]/25"
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="vous@exemple.com"
                 required
@@ -116,12 +126,45 @@ export default function Home() {
               />
             </label>
 
+            <div className="flex justify-center rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] p-3">
+              {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+                <ReCAPTCHA
+                  onChange={(token) => setCaptchaToken(token)}
+                  onExpired={() => setCaptchaToken(null)}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                  theme="dark"
+                />
+              ) : (
+                <p className="text-center text-sm text-[#e05c5c]">
+                  Variable NEXT_PUBLIC_RECAPTCHA_SITE_KEY manquante.
+                </p>
+              )}
+            </div>
+
+            {captchaToken ? (
+              <button
+                className="w-full rounded-md bg-[#16a832] px-4 py-3 font-bold text-white transition hover:bg-[#20c940] disabled:cursor-not-allowed disabled:opacity-70"
+                disabled={isLoading}
+                type="submit"
+              >
+                {isLoading && !showCode ? "Envoi..." : "Envoyer le code"}
+              </button>
+            ) : null}
+
+            <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.18em] text-[#666666]">
+              <span className="h-px flex-1 bg-[#2a2a2a]" />
+              ou
+              <span className="h-px flex-1 bg-[#2a2a2a]" />
+            </div>
+
             <button
-              className="w-full rounded-md bg-[#ff4400] px-4 py-3 font-bold text-white transition hover:bg-[#ff5f24] disabled:cursor-not-allowed disabled:opacity-70"
+              className="flex w-full items-center justify-center gap-3 rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 font-bold text-white transition hover:border-[#16a832] hover:bg-[#121912] disabled:cursor-not-allowed disabled:opacity-70"
               disabled={isLoading}
-              type="submit"
+              onClick={signInWithGoogle}
+              type="button"
             >
-              {isLoading && !showCode ? "Envoi..." : "Envoyer le code"}
+              <FcGoogle className="text-xl" />
+              Continuer avec Google
             </button>
 
             {showCode ? (
@@ -131,7 +174,7 @@ export default function Home() {
                     Code
                   </span>
                   <input
-                    className="w-full rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 text-white outline-none transition focus:border-[#ff4400] focus:ring-2 focus:ring-[#ff4400]/25"
+                    className="w-full rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 text-white outline-none transition focus:border-[#16a832] focus:ring-2 focus:ring-[#16a832]/25"
                     inputMode="numeric"
                     maxLength={6}
                     onChange={(event) => setCode(event.target.value)}
@@ -140,7 +183,7 @@ export default function Home() {
                   />
                 </label>
                 <button
-                  className="w-full rounded-md border border-[#ff4400] px-4 py-3 font-bold text-[#ff6a2b] transition hover:bg-[#ff4400] hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
+                  className="w-full rounded-md border border-[#16a832] px-4 py-3 font-bold text-[#48d65b] transition hover:bg-[#16a832] hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
                   disabled={isLoading || code.length < 6}
                   onClick={verifyCode}
                   type="button"
