@@ -33,8 +33,8 @@ export default function MinevidTubePage() {
   return (
     <main className="min-h-screen overflow-hidden bg-[#111111] text-[#e7e7e7]">
       {showAccessPopup ? (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/75 px-4 backdrop-blur-sm">
-          <section className="w-full max-w-md rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] p-7 text-center shadow-2xl shadow-black/40">
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/75 px-3 backdrop-blur-sm sm:px-4">
+          <section className="w-full max-w-md rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] p-5 text-center shadow-2xl shadow-black/40 sm:p-7">
             <p className="mx-auto mb-5 grid h-12 w-12 place-items-center rounded-full bg-[#18330f] text-xl font-bold text-[#48d65b]">
               !
             </p>
@@ -55,24 +55,24 @@ export default function MinevidTubePage() {
         </div>
       ) : null}
 
-      <section className="mx-auto grid min-h-screen w-full max-w-6xl items-center gap-10 px-4 py-10 md:grid-cols-[0.9fr_1.1fr]">
-        <div className="space-y-7">
+      <section className="mx-auto grid min-h-screen w-full max-w-6xl items-start gap-8 px-3 py-6 sm:px-4 sm:py-10 md:grid-cols-[0.9fr_1.1fr] md:items-center md:gap-10">
+        <div className="space-y-5 md:space-y-7">
           <div className="inline-flex rounded-full border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-2 text-sm font-semibold text-[#48d65b]">
             MinevidTube
           </div>
 
           <div className="space-y-5">
-            <h1 className="max-w-2xl text-4xl font-bold leading-tight text-white md:text-6xl">
+            <h1 className="max-w-2xl text-3xl font-bold leading-tight text-white sm:text-4xl md:text-6xl">
               Un YouTube pour les fans de Minecraft.
             </h1>
-            <p className="max-w-xl text-base leading-7 text-[#a7a7a7] md:text-lg">
+            <p className="max-w-xl text-sm leading-6 text-[#a7a7a7] sm:text-base sm:leading-7 md:text-lg">
               Regardez, partagez et installez MinevidTube, une experience video
               pensee pour la communaute Minecraft.
             </p>
           </div>
 
           <a
-            className="inline-flex items-center justify-center gap-3 rounded-md bg-[#16a832] px-6 py-4 text-base font-bold text-white transition hover:bg-[#20c940]"
+            className="inline-flex w-full items-center justify-center gap-3 rounded-md bg-[#16a832] px-5 py-4 text-sm font-bold text-white transition hover:bg-[#20c940] sm:w-auto sm:px-6 sm:text-base"
             download
             href={DOWNLOAD_URL}
           >
@@ -81,7 +81,7 @@ export default function MinevidTubePage() {
           </a>
         </div>
 
-        <div className="relative">
+        <div className="relative w-full">
           <div className="absolute -inset-4 rounded-xl border border-[#16a832]/25 bg-[#16a832]/10 blur-2xl" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img

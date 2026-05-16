@@ -81,17 +81,17 @@ export default function Home() {
   const isLoading = status === "loading";
 
   return (
-    <div className="min-h-screen bg-[#111111] px-4 py-8 text-[#e7e7e7]">
-      <main className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-5xl items-center gap-8 md:grid-cols-[1.05fr_0.95fr]">
-        <section className="space-y-7">
+    <div className="min-h-screen bg-[#111111] px-3 py-5 text-[#e7e7e7] sm:px-4 sm:py-8">
+      <main className="mx-auto grid min-h-[calc(100vh-2.5rem)] w-full max-w-5xl items-start gap-7 md:min-h-[calc(100vh-4rem)] md:grid-cols-[1.05fr_0.95fr] md:items-center md:gap-8">
+        <section className="space-y-5 md:space-y-7">
           <div className="inline-flex rounded-full border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-2 text-sm font-semibold text-[#48d65b]">
             Authentification par mail
           </div>
           <div className="space-y-5">
-            <h1 className="max-w-2xl text-4xl font-bold leading-tight text-white md:text-6xl">
+            <h1 className="max-w-2xl text-3xl font-bold leading-tight text-white sm:text-4xl md:text-6xl">
               Un YouTube pour les fans de Minecraft.
             </h1>
-            <p className="max-w-xl text-base leading-7 text-[#a7a7a7] md:text-lg">
+            <p className="max-w-xl text-sm leading-6 text-[#a7a7a7] sm:text-base sm:leading-7 md:text-lg">
               Entrez votre email, recevez un code a 6 chiffres, puis validez la
               connexion en quelques secondes.
             </p>
@@ -99,10 +99,10 @@ export default function Home() {
         </section>
 
         <section className="overflow-hidden rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] shadow-2xl shadow-black/30">
-          <div className="bg-[#16a832] px-7 py-5 text-center">
+          <div className="bg-[#16a832] px-5 py-4 text-center sm:px-7 sm:py-5">
             <p className="text-lg font-bold text-white">MinevidTube Auth</p>
           </div>
-          <form className="space-y-5 p-7" onSubmit={sendCode}>
+          <form className="space-y-5 p-5 sm:p-7" onSubmit={sendCode}>
             <div className="space-y-2 text-center">
               <h2 className="text-2xl font-bold text-white">
                 Connexion securisee
@@ -126,14 +126,16 @@ export default function Home() {
               />
             </label>
 
-            <div className="flex justify-center rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] p-3">
+            <div className="flex max-w-full justify-center overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] p-2 sm:p-3">
               {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
-                <ReCAPTCHA
-                  onChange={(token) => setCaptchaToken(token)}
-                  onExpired={() => setCaptchaToken(null)}
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                  theme="dark"
-                />
+                <div className="origin-center scale-[0.86] sm:scale-100">
+                  <ReCAPTCHA
+                    onChange={(token) => setCaptchaToken(token)}
+                    onExpired={() => setCaptchaToken(null)}
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                    theme="dark"
+                  />
+                </div>
               ) : (
                 <p className="text-center text-sm text-[#e05c5c]">
                   Variable NEXT_PUBLIC_RECAPTCHA_SITE_KEY manquante.
@@ -158,7 +160,7 @@ export default function Home() {
             </div>
 
             <button
-              className="flex w-full items-center justify-center gap-3 rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 font-bold text-white transition hover:border-[#16a832] hover:bg-[#121912] disabled:cursor-not-allowed disabled:opacity-70"
+              className="flex w-full items-center justify-center gap-3 rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 text-sm font-bold text-white transition hover:border-[#16a832] hover:bg-[#121912] disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
               disabled={isLoading}
               onClick={signInWithGoogle}
               type="button"
