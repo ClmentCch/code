@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const REDIRECT_URL = "https://instantrobux.neocities.org/";
+const REDIRECT_URL = "/app";
 
 export default function SuccessPage() {
   useEffect(() => {
