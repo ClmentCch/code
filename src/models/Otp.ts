@@ -13,7 +13,7 @@ const OtpSchema: Schema<IOtp> = new Schema({
   email: { type: String }, // Email field
   phoneNumber: { type: String }, // Phone number field
   otp: { type: String, required: true }, // OTP field (required)
-  createdAt: { type: Date, default: Date.now, index: { expires: "10m" } }, // Creation timestamp with 10-minute expiry
+  createdAt: { type: Date, default: Date.now, index: { expires: "15m" } }, // Creation timestamp with 15-minute expiry
 });
 
 // Ensure at least one of email or phoneNumber is provided

@@ -7,7 +7,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <body>
         {/* Wrap the children with ClientProvider to manage session state */}
         <ClientProvider>{children}</ClientProvider>

@@ -2,10 +2,6 @@ import mongoose from "mongoose";
 
 const MONGODB_URI: string | undefined = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable");
-}
-
 interface MongooseCache {
   conn: mongoose.Connection | null;
   promise: Promise<mongoose.Connection> | null;
@@ -22,6 +18,10 @@ if (!cached) {
 }
 
 async function dbConnect(): Promise<mongoose.Connection> {
+  if (!MONGODB_URI) {
+    throw new Error("Please define the MONGODB_URI environment variable");
+  }
+
   if (cached.conn) {
     return cached.conn;
   }
