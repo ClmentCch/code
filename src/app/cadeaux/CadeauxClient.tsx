@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 const AUTH_ORIGIN = "https://instantrobux.vercel.app";
 const PROFILE_IMAGE =
   "https://pixabay.com/fr/images/download/wanderercreative-blank-profile-picture-973460_1920.png";
+const ROBUX_CARD_IMAGE =
+  "https://gaming-cdn.com/images/products/10437/orig/roblox-800-robux-pc-cover.jpg?v=1767788892";
 const GIFT_OWNER = "clementcochie@gmail.com";
 
 function isAllowedReferrer(referrer: string) {
@@ -102,6 +104,7 @@ export default function CadeauxClient({ email }: { email: string }) {
           <p className="text-2xl text-[#ff5a00] md:hidden">InstantRobux</p>
           <div className="flex min-w-0 items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt="Profil"
               className="h-12 w-12 shrink-0 rounded-full object-cover md:h-[50px] md:w-[50px]"
@@ -136,15 +139,11 @@ export default function CadeauxClient({ email }: { email: string }) {
         {hasGift ? (
           <article className="w-full max-w-[320px] rounded-[34px] bg-black p-2 pb-3 md:ml-0">
             <p className="mb-2 px-1 pt-3 text-xl">De la part de Clement</p>
-            <div className="mb-2 grid h-[155px] place-items-center rounded-lg bg-[radial-gradient(circle,#222_0%,#050505_70%)] text-center">
-              <div>
-                <p className="text-4xl font-black tracking-wide">ROBLOX</p>
-                <div className="mx-auto my-2 grid h-16 w-20 place-items-center bg-white text-xs text-[#ff5a00]">
-                  ROBUX
-                </div>
-                <p className="text-2xl font-bold">800 - Robux</p>
-              </div>
-            </div>
+            <img
+              alt="Roblox 800 Robux"
+              className="mb-2 h-[155px] w-full rounded-lg object-cover"
+              src={ROBUX_CARD_IMAGE}
+            />
             <h2 className="mb-1 text-xl">Roblox - 800 Robux</h2>
             <p>Date d&apos;achat : 15/05/2026</p>
             <p>Type de vente : Robux</p>
