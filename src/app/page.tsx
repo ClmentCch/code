@@ -108,7 +108,7 @@ export default function Home() {
           </div>
           <div className="space-y-5">
             <h1 className="max-w-2xl text-3xl font-bold leading-tight text-white sm:text-4xl md:text-6xl">
-              Un YouTube pour les fans de Minecraft.
+              Envoyer des robux sans frais a vos amis.
             </h1>
             <p className="max-w-xl text-sm leading-6 text-[#a7a7a7] sm:text-base sm:leading-7 md:text-lg">
               Entrez votre email, choisissez votre mot de passe, puis validez le
