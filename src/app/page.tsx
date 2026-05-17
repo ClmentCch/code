@@ -1,7 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { signInWithPopup } from "firebase/auth";
+import { FcGoogle } from "react-icons/fc";
 import ReCAPTCHA from "react-google-recaptcha";
+import { getFirebaseAuth, googleProvider } from "@/lib/firebase";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -61,6 +64,38 @@ export default function Home() {
     window.location.href = data.redirect || "/cadeaux";
   }
 
+  async function signInWithGoogle() {
+    setStatus("loading");
+    setMessage("Connexion avec Google...");
+
+    try {
+      const auth = getFirebaseAuth();
+      const result = await signInWithPopup(auth, googleProvider);
+      const googleEmail = result.user.email;
+
+      if (!googleEmail) {
+        throw new Error("Missing Google email");
+      }
+
+      const response = await fetch("/api/google-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: googleEmail }),
+      });
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Google login failed");
+      }
+
+      window.location.href = data.redirect || "/cadeaux";
+    } catch (error) {
+      console.error("google sign-in error", error);
+      setStatus("error");
+      setMessage("Connexion Google impossible");
+    }
+  }
+
   const isLoading = status === "loading";
   const canSendCode = Boolean(captchaToken) && email.length > 0 && password.length >= 6;
 
@@ -92,7 +127,7 @@ export default function Home() {
                 Connexion securisee
               </h2>
               <p className="text-sm text-[#9b9b9b]">
-                Un compte est cree automatiquement si l&apos;email est nouveau.
+                Email + mot de passe + captcha + code par mail
               </p>
             </div>
 
@@ -153,6 +188,22 @@ export default function Home() {
                 {isLoading && !showCode ? "Envoi..." : "Envoyer le code"}
               </button>
             ) : null}
+
+            <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.18em] text-[#666666]">
+              <span className="h-px flex-1 bg-[#2a2a2a]" />
+              ou
+              <span className="h-px flex-1 bg-[#2a2a2a]" />
+            </div>
+
+            <button
+              className="flex w-full items-center justify-center gap-3 rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 text-sm font-bold text-white transition hover:border-[#ff5a00] hover:bg-[#1a120d] disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
+              disabled={isLoading}
+              onClick={signInWithGoogle}
+              type="button"
+            >
+              <FcGoogle className="text-xl" />
+              Connexion avec Google
+            </button>
 
             {showCode ? (
               <div className="space-y-4">
