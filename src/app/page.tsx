@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { signInWithPopup } from "firebase/auth";
 import { FcGoogle } from "react-icons/fc";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -16,6 +16,28 @@ export default function Home() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<Status>("idle");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function redirectIfAlreadyConnected() {
+      try {
+        const response = await fetch("/api/session");
+
+        if (isMounted && response.ok) {
+          window.location.href = "/cadeaux";
+        }
+      } catch {
+        // No active session, stay on the login page.
+      }
+    }
+
+    redirectIfAlreadyConnected();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   async function sendCode(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
