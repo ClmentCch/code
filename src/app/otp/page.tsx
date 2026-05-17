@@ -120,7 +120,7 @@ const OtpPage: React.FC = () => {
             {/* Button to generate OTP */}
             <button
               onClick={handleGenerateOtp}
-              className="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600"
+              className="w-full bg-orange-500 text-white p-3 rounded hover:bg-orange-600"
             >
               Generate OTP
             </button>
@@ -141,7 +141,7 @@ const OtpPage: React.FC = () => {
                 {/* Button to verify OTP */}
                 <button
                   onClick={handleVerifyOtp}
-                  className="w-full bg-blue-500 text-white p-3 rounded"
+                  className="w-full bg-orange-500 text-white p-3 rounded"
                 >
                   Verify OTP
                 </button>

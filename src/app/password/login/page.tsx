@@ -36,7 +36,7 @@ const Login: React.FC = () => {
           <>
             <AuthForm mode="Login" onSubmit={handleLogin} />
             <Link href="/password/signup">
-              <p className="text-center text-blue-500 font-bold underline py-4">
+              <p className="text-center text-orange-500 font-bold underline py-4">
                 Create a new account
               </p>
             </Link>

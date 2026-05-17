@@ -4,6 +4,7 @@ import dbConnect from "@/lib/mongodb";
 import { sendLoginCode } from "@/lib/mail";
 import { verifyRecaptcha } from "@/lib/recaptcha";
 import Otp from "@/models/Otp";
+import User from "@/models/User";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -20,10 +21,18 @@ export default async function handler(
   }
 
   const email = String(req.body?.email || "").trim().toLowerCase();
+  const password = String(req.body?.password || "");
   const captchaToken = String(req.body?.captchaToken || "");
 
   if (!EMAIL_REGEX.test(email)) {
     return res.status(400).json({ success: false, message: "Email invalide" });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({
+      success: false,
+      message: "Le mot de passe doit contenir au moins 6 caracteres",
+    });
   }
 
   if (!captchaToken) {
@@ -38,6 +47,22 @@ export default async function handler(
     }
 
     await dbConnect();
+
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      const passwordIsValid = bcrypt.compareSync(password, existingUser.password);
+
+      if (!passwordIsValid) {
+        return res.status(401).json({
+          success: false,
+          message: "Mot de passe incorrect",
+        });
+      }
+    } else {
+      const hashedPassword = bcrypt.hashSync(password, 10);
+      await User.create({ email, password: hashedPassword });
+    }
 
     const code = generateCode();
     const hashedCode = bcrypt.hashSync(code, 10);

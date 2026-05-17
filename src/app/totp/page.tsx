@@ -97,7 +97,7 @@ export default function TOTP() {
             />
             <button
               onClick={handleLogin}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 w-full"
+              className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded mb-4 w-full"
             >
               Login with TOTP
             </button>
@@ -107,7 +107,7 @@ export default function TOTP() {
         {loggedIn && !totpEnabled && !qrCode && (
           <button
             onClick={generateQrCode}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 w-full"
+            className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded mb-4 w-full"
           >
             Generate QR Code
           </button>
@@ -124,7 +124,7 @@ export default function TOTP() {
             />
             <button
               onClick={verifyToken}
-              className="bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mb-4 w-full"
+              className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded mb-4 w-full"
             >
               Verify Code
             </button>
@@ -157,7 +157,7 @@ export default function TOTP() {
               />
               <button
                 onClick={verifyToken}
-                className="bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mt-4 w-full"
+                className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded mt-4 w-full"
               >
                 Verify code
               </button>
@@ -173,7 +173,7 @@ export default function TOTP() {
             </div>
             <button
               onClick={handleLogout}
-              className="bg-blue-200 hover:bg-blue-400 font-bold py-2 px-4 rounded mt-4 w-full"
+              className="bg-orange-200 hover:bg-orange-400 font-bold py-2 px-4 rounded mt-4 w-full"
             >
               Logout
             </button>

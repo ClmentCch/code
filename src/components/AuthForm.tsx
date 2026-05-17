@@ -33,7 +33,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, resetForm }) => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
+          className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-orange-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
         />
       </div>
       <div>
@@ -45,12 +45,12 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, onSubmit, resetForm }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
+          className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring focus:border-orange-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
         />
       </div>
       <button
         type="submit"
-        className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+        className="w-full py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 focus:outline-none focus:ring focus:ring-orange-300"
       >
         {mode}
       </button>

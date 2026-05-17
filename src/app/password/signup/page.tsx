@@ -48,7 +48,7 @@ const Signup: React.FC = () => {
         )}
         {isSuccessful && (
           <Link href="/password/login">
-            <p className="text-center text-blue-500 font-bold underline py-4">
+            <p className="text-center text-orange-500 font-bold underline py-4">
               Back to login
             </p>
           </Link>
